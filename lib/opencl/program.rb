@@ -41,6 +41,28 @@ module OpenCL
       ref_count.read_uint
     end
 
+    def build_status
+      status = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_build_status)
+      clGetProgramBuildInfo(@program, @cl.default_device.id, CL_PROGRAM_BUILD_STATUS, status.size, status, nil)
+      status.read_int
+    end
+
+    def build_options
+      options = FFI::Buffer.new 128
+      clGetProgramBuildInfo(@program, @cl.default_device.id, CL_PROGRAM_BUILD_OPTIONS, options.size, options, nil)
+      options.get_string(0)
+    end
+
+    def build_log
+      log_size = FFI::MemoryPointer.new :size_t
+      clGetProgramBuildInfo(@program, @cl.default_device.id, CL_PROGRAM_BUILD_LOG, 0, nil, log_size)
+      log_size = log_size.read_uint
+
+      log = FFI::MemoryPointer.new :string, log_size + 1
+      clGetProgramBuildInfo(@program, @cl.default_device.id, CL_PROGRAM_BUILD_LOG, log_size + 1, log, nil)
+      log.read_string
+    end
+
     private
 
     def create

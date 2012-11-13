@@ -32,6 +32,8 @@ module FFI
     typedef :cl_uint, :cl_context_info
     typedef :cl_bitfield, :cl_mem_flags
     typedef :cl_uint, :cl_program_info
+    typedef :cl_uint, :cl_program_build_info
+    typedef :cl_int, :cl_build_status
 
     # error codes
 
@@ -120,8 +122,15 @@ module FFI
     CL_PROGRAM_BINARIES = 0x1166
 
     # cl_program_build_info
+    CL_PROGRAM_BUILD_STATUS = 0x1181
+    CL_PROGRAM_BUILD_OPTIONS = 0x1182
+    CL_PROGRAM_BUILD_LOG = 0x1183
 
     # cl_build_status
+    CL_BUILD_SUCCESS = 0
+    CL_BUILD_NONE = -1
+    CL_BUILD_ERROR = -2
+    CL_BUILD_IN_PROGRESS = -3
 
     # cl_kernel_info
 
@@ -167,6 +176,7 @@ module FFI
     attach_function :clReleaseProgram, [:cl_program], :cl_int
     attach_function :clBuildProgram, [:cl_program, :cl_uint, :pointer, :string, :pointer, :pointer], :cl_int
     attach_function :clGetProgramInfo, [:cl_program, :cl_program_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clGetProgramBuildInfo, [:cl_program, :cl_device_id, :cl_program_build_info, :size_t, :pointer, :pointer], :cl_int
 
     # kernel object API
     attach_function :clCreateKernel, [:cl_program, :string, :pointer], :cl_kernel
