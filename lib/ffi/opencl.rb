@@ -29,6 +29,7 @@ module FFI
     typedef :cl_bitfield, :cl_device_exec_capabilities
     typedef :cl_bitfield, :cl_command_queue_properties
 
+    typedef :cl_uint, :cl_context_info
     typedef :cl_bitfield, :cl_mem_flags
 
     # error codes
@@ -73,6 +74,10 @@ module FFI
     CL_QUEUE_PROFILING_ENABLE = 1 << 1
 
     # cl_context_info
+    CL_CONTEXT_REFERENCE_COUNT = 0x1080
+    CL_CONTEXT_DEVICES = 0x1081
+    CL_CONTEXT_PROPERTIES = 0x1082
+    CL_CONTEXT_NUM_DEVICES = 0x1083
 
     # cl_context_info + cl_context_properties
 
@@ -134,7 +139,9 @@ module FFI
 
     # context API
     attach_function :clCreateContext, [:pointer, :cl_uint, :pointer, :pointer, :pointer, :pointer], :cl_context
+    attach_function :clRetainContext, [:cl_context], :cl_int
     attach_function :clReleaseContext, [:cl_context], :cl_int
+    attach_function :clGetContextInfo, [:cl_context, :cl_context_info, :size_t, :pointer, :pointer], :cl_int
 
     # command queue API
     attach_function :clCreateCommandQueue, [:cl_context, :cl_device_id, :cl_command_queue_properties, :pointer], :cl_command_queue

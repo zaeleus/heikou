@@ -2,6 +2,10 @@ module OpenCL
   class CL
     include FFI::OpenCL
 
+    def finalize
+      @contexts.each(&:finalize)
+    end
+
     def platforms
       @platforms ||= begin
         platform = FFI::MemoryPointer.new :pointer
@@ -31,6 +35,14 @@ module OpenCL
 
     def default_device
       devices.first
+    end
+
+    def contexts
+      @contexts ||= [Context.new(self, default_device)]
+    end
+
+    def default_context
+      contexts.first
     end
   end
 end
