@@ -31,6 +31,7 @@ module FFI
 
     typedef :cl_uint, :cl_context_info
     typedef :cl_bitfield, :cl_mem_flags
+    typedef :cl_uint, :cl_program_info
 
     # error codes
 
@@ -110,6 +111,13 @@ module FFI
     # cl_map_flags - bitfield
 
     # cl_program_info
+    CL_PROGRAM_REFERENCE_COUNT = 0x1160
+    CL_PROGRAM_CONTEXT = 0x1161
+    CL_PROGRAM_NUM_DEVICES = 0x1162
+    CL_PROGRAM_DEVICES = 0x1163
+    CL_PROGRAM_SOURCE = 0x1164
+    CL_PROGRAM_BINARY_SIZES = 0x1165
+    CL_PROGRAM_BINARIES = 0x1166
 
     # cl_program_build_info
 
@@ -155,8 +163,10 @@ module FFI
 
     # program object API
     attach_function :clCreateProgramWithSource, [:cl_context, :cl_uint, :pointer, :pointer, :pointer], :cl_program
+    attach_function :clRetainProgram, [:cl_program], :cl_int
     attach_function :clReleaseProgram, [:cl_program], :cl_int
     attach_function :clBuildProgram, [:cl_program, :cl_uint, :pointer, :string, :pointer, :pointer], :cl_int
+    attach_function :clGetProgramInfo, [:cl_program, :cl_program_info, :size_t, :pointer, :pointer], :cl_int
 
     # kernel object API
     attach_function :clCreateKernel, [:cl_program, :string, :pointer], :cl_kernel

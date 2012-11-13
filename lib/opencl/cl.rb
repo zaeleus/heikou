@@ -44,5 +44,10 @@ module OpenCL
     def default_context
       contexts.first
     end
+
+    def create_program_with_source(source = nil)
+      source ||= yield
+      Program.new(self, default_context, source)
+    end
   end
 end
