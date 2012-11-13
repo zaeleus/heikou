@@ -34,6 +34,7 @@ module FFI
     typedef :cl_uint, :cl_program_info
     typedef :cl_uint, :cl_program_build_info
     typedef :cl_int, :cl_build_status
+    typedef :cl_uint, :cl_kernel_info
 
     # error codes
 
@@ -133,6 +134,11 @@ module FFI
     CL_BUILD_IN_PROGRESS = -3
 
     # cl_kernel_info
+    CL_KERNEL_FUNCTION_NAME = 0x1190
+    CL_KERNEL_NUM_ARGS = 0x1191
+    CL_KERNEL_REFERENCE_COUNT = 0x1192
+    CL_KERNEL_CONTEXT = 0x1193
+    CL_KERNEL_PROGRAM = 0x1193
 
     # cl_kernel_work_group_info
 
@@ -180,8 +186,10 @@ module FFI
 
     # kernel object API
     attach_function :clCreateKernel, [:cl_program, :string, :pointer], :cl_kernel
+    attach_function :clRetainKernel, [:cl_kernel], :cl_int
     attach_function :clReleaseKernel, [:cl_kernel], :cl_int
     attach_function :clSetKernelArg, [:cl_kernel, :cl_uint, :size_t, :pointer], :cl_int
+    attach_function :clGetKernelInfo, [:cl_kernel, :cl_kernel_info, :size_t, :pointer, :pointer], :cl_int
 
     # event object API
 

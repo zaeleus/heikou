@@ -63,6 +63,11 @@ module OpenCL
       log.read_string
     end
 
+    def to_kernel(name)
+      kernel = clCreateKernel(@program, name, nil)
+      Kernel.new(@cl, self, kernel)
+    end
+
     private
 
     def create
