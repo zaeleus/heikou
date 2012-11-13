@@ -49,5 +49,13 @@ module OpenCL
       source ||= yield
       Program.new(self, default_context, source)
     end
+
+    def queues
+      @queues ||= [Queue.new(self, default_context, default_device)]
+    end
+
+    def default_queue
+      queues.first
+    end
   end
 end

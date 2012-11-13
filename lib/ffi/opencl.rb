@@ -30,6 +30,7 @@ module FFI
     typedef :cl_bitfield, :cl_command_queue_properties
 
     typedef :cl_uint, :cl_context_info
+    typedef :cl_uint, :cl_command_queue_info
     typedef :cl_bitfield, :cl_mem_flags
     typedef :cl_uint, :cl_program_info
     typedef :cl_uint, :cl_program_build_info
@@ -137,6 +138,10 @@ module FFI
     # cl_context_info + cl_context_properties
 
     # cl_command_queue_info
+    CL_QUEUE_CONTEXT = 0x1090
+    CL_QUEUE_DEVICE = 0x1091
+    CL_QUEUE_REFERENCE_COUNT = 0x1092
+    CL_QUEUE_PROPERTIES = 0x1093
 
     # cl_mem_flags - bitfield
     CL_MEM_READ_WRITE = 1 << 0
@@ -219,7 +224,9 @@ module FFI
 
     # command queue API
     attach_function :clCreateCommandQueue, [:cl_context, :cl_device_id, :cl_command_queue_properties, :pointer], :cl_command_queue
+    attach_function :clRetainCommandQueue, [:cl_command_queue], :cl_int
     attach_function :clReleaseCommandQueue, [:cl_command_queue], :cl_int
+    attach_function :clGetCommandQueueInfo, [:cl_command_queue, :cl_command_queue_info, :size_t, :pointer, :pointer], :cl_int
 
     # memory object API
     attach_function :clCreateBuffer, [:cl_context, :cl_mem_flags, :size_t, :pointer, :pointer], :cl_mem 
