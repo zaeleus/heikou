@@ -259,5 +259,6 @@ module FFI
     # enqueued command API
     attach_function :clEnqueueReadBuffer, [:cl_command_queue, :cl_mem, :cl_bool, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
     attach_function :clEnqueueNDRangeKernel, [:cl_command_queue, :cl_kernel, :cl_uint, :pointer, :pointer, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueTask, [:cl_command_queue, :cl_kernel, :cl_uint, :pointer, :pointer], :cl_int
   end
 end

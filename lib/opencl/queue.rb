@@ -23,6 +23,14 @@ module OpenCL
       clReleaseCommandQueue(@queue)
     end
 
+    def enqueue_task(kernel)
+      kernel = kernel.kernel
+
+      clEnqueueTask(@queue, kernel, 0, nil, nil)
+    end
+    alias_method :<<, :enqueue_task
+    alias_method :add, :enqueue_task
+
     private
 
     def create
