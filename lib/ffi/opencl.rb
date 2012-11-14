@@ -29,15 +29,39 @@ module FFI
     typedef :cl_bitfield, :cl_device_exec_capabilities
     typedef :cl_bitfield, :cl_command_queue_properties
 
+    #typedef :intptr_t, :cl_context_properties
+    typedef :pointer, :cl_context_properties
     typedef :cl_uint, :cl_context_info
     typedef :cl_uint, :cl_command_queue_info
+    typedef :cl_uint, :cl_channel_order
+    typedef :cl_uint, :cl_channel_type
     typedef :cl_bitfield, :cl_mem_flags
     typedef :cl_uint, :cl_mem_object_type
     typedef :cl_uint, :cl_mem_info
+    typedef :cl_uint, :cl_image_info
+    typedef :cl_uint, :cl_buffer_create_type
+    typedef :cl_uint, :cl_addressing_mode
+    typedef :cl_uint, :cl_filter_mode
+    typedef :cl_uint, :cl_sampler_info
+    typedef :cl_bitfield, :cl_map_flags
     typedef :cl_uint, :cl_program_info
     typedef :cl_uint, :cl_program_build_info
     typedef :cl_int, :cl_build_status
     typedef :cl_uint, :cl_kernel_info
+    typedef :cl_uint, :cl_kernel_work_group_info
+    typedef :cl_uint, :cl_event_info
+    typedef :cl_uint, :cl_command_type
+    typedef :cl_uint, :cl_profiling_info
+
+    class CLImageFormat < Struct
+      layout :image_channel_order, :cl_channel_order,
+             :image_channel_data_type, :cl_channel_type
+    end
+
+    class CLBufferRegion < Struct
+      layout :origin, :size_t,
+             :size, :size_t
+    end
 
     # error codes
     CL_SUCCESS = 0
