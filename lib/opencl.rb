@@ -2,6 +2,7 @@ require 'ffi'
 require 'ffi/opencl'
 
 require 'opencl/cl'
+require 'opencl/buffer'
 require 'opencl/context'
 require 'opencl/device'
 require 'opencl/kernel'

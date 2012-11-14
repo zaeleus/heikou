@@ -32,6 +32,8 @@ module FFI
     typedef :cl_uint, :cl_context_info
     typedef :cl_uint, :cl_command_queue_info
     typedef :cl_bitfield, :cl_mem_flags
+    typedef :cl_uint, :cl_mem_object_type
+    typedef :cl_uint, :cl_mem_info
     typedef :cl_uint, :cl_program_info
     typedef :cl_uint, :cl_program_build_info
     typedef :cl_int, :cl_build_status
@@ -156,8 +158,20 @@ module FFI
     # cl_channel_type
 
     # cl_mem_object_type
+    CL_MEM_OBJECT_BUFFER = 0x10f0
+    CL_MEM_OBJECT_IMAGE2D = 0x10f1
+    CL_MEM_OBJECT_IMAGE3D = 0x10f2
 
     # cl_mem_info
+    CL_MEM_TYPE = 0x1100
+    CL_MEM_FLAGS = 0x1101
+    CL_MEM_SIZE = 0x1102
+    CL_MEM_HOST_PTR = 0x1103
+    CL_MEM_MAP_COUNT = 0x1104
+    CL_MEM_REFERENCE_COUNT = 0x1105
+    CL_MEM_CONTEXT = 0x1106
+    CL_MEM_ASSOCIATED_MEMOBJECT = 0x1107
+    CL_MEM_OFFSET = 0x1108
 
     # cl_image_info
 
@@ -230,7 +244,9 @@ module FFI
 
     # memory object API
     attach_function :clCreateBuffer, [:cl_context, :cl_mem_flags, :size_t, :pointer, :pointer], :cl_mem 
+    attach_function :clRetainMemObject, [:cl_mem], :cl_int
     attach_function :clReleaseMemObject, [:cl_mem], :cl_int
+    attach_function :clGetMemObjectInfo, [:cl_mem, :cl_mem_info, :size_t, :pointer, :pointer], :cl_int
 
     # sampler API
 
