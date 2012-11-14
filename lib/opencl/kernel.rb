@@ -40,6 +40,18 @@ module OpenCL
       ref_count.read_uint
     end
 
+    def set_arg(index, value)
+      size = FFI::OpenCL.find_type(:cl_uint).size
+      clSetKernelArg(@kernel, index, size, value.host_ptr)
+    end
+
+    def call(*args)
+      args.each_with_index do |arg, i|
+        set_arg(i, arg)
+      end
+    end
+    alias_method :[], :call
+
     def context
       @program.context
     end
