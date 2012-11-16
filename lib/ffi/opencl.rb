@@ -425,6 +425,7 @@ module FFI
 
     # context API
     attach_function :clCreateContext, [:pointer, :cl_uint, :pointer, :pointer, :pointer, :pointer], :cl_context
+    attach_function :clCreateContextFromType, [:pointer, :cl_uint, :pointer, :pointer, :pointer, :pointer], :cl_context
     attach_function :clRetainContext, [:cl_context], :cl_int
     attach_function :clReleaseContext, [:cl_context], :cl_int
     attach_function :clGetContextInfo, [:cl_context, :cl_context_info, :size_t, :pointer, :pointer], :cl_int
@@ -434,40 +435,84 @@ module FFI
     attach_function :clRetainCommandQueue, [:cl_command_queue], :cl_int
     attach_function :clReleaseCommandQueue, [:cl_command_queue], :cl_int
     attach_function :clGetCommandQueueInfo, [:cl_command_queue, :cl_command_queue_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clSetCommandQueueProperty, [:cl_command_queue, :cl_command_queue_properties, :cl_bool, :pointer], :cl_int # deprecated
 
     # memory object API
     attach_function :clCreateBuffer, [:cl_context, :cl_mem_flags, :size_t, :pointer, :pointer], :cl_mem 
+    attach_function :clCreateSubBuffer, [:cl_mem, :cl_mem_flags, :cl_buffer_create_type, :pointer, :pointer], :cl_mem
+    attach_function :clCreateImage2D, [:cl_context, :cl_mem_flags, :pointer, :size_t, :size_t, :size_t, :pointer, :pointer], :cl_mem
+    attach_function :clCreateImage3D, [:cl_context, :cl_mem_flags, :pointer, :size_t, :size_t, :size_t, :size_t, :size_t, :pointer, :pointer], :cl_mem
     attach_function :clRetainMemObject, [:cl_mem], :cl_int
     attach_function :clReleaseMemObject, [:cl_mem], :cl_int
+    attach_function :clGetSupportedImageFormats, [:cl_context, :cl_mem_flags, :cl_mem_object_type, :cl_uint, :pointer, :pointer], :cl_int
     attach_function :clGetMemObjectInfo, [:cl_mem, :cl_mem_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clGetImageInfo, [:cl_mem, :cl_image_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clSetMemObjectDestructorCallback, [:cl_mem, :pointer, :pointer], :cl_int
 
     # sampler API
+    attach_function :clCreateSampler, [:cl_context, :cl_bool, :cl_addressing_mode, :cl_filter_mode, :pointer], :cl_sampler
+    attach_function :clRetainSampler, [:cl_sampler], :cl_int
+    attach_function :clReleaseSampler, [:cl_sampler], :cl_int
+    attach_function :clGetSamplerInfo, [:cl_sampler, :cl_sampler_info, :size_t, :pointer, :pointer], :cl_int
 
     # program object API
     attach_function :clCreateProgramWithSource, [:cl_context, :cl_uint, :pointer, :pointer, :pointer], :cl_program
+    attach_function :clCreateProgramWithBinary, [:cl_context, :cl_uint, :pointer, :pointer, :pointer, :pointer, :pointer], :cl_program
     attach_function :clRetainProgram, [:cl_program], :cl_int
     attach_function :clReleaseProgram, [:cl_program], :cl_int
     attach_function :clBuildProgram, [:cl_program, :cl_uint, :pointer, :string, :pointer, :pointer], :cl_int
+    attach_function :clUnloadCompiler, [], :cl_int
     attach_function :clGetProgramInfo, [:cl_program, :cl_program_info, :size_t, :pointer, :pointer], :cl_int
     attach_function :clGetProgramBuildInfo, [:cl_program, :cl_device_id, :cl_program_build_info, :size_t, :pointer, :pointer], :cl_int
 
     # kernel object API
     attach_function :clCreateKernel, [:cl_program, :string, :pointer], :cl_kernel
+    attach_function :clCreateKernelsInProgram, [:cl_program, :cl_uint, :pointer, :pointer], :cl_int
     attach_function :clRetainKernel, [:cl_kernel], :cl_int
     attach_function :clReleaseKernel, [:cl_kernel], :cl_int
     attach_function :clSetKernelArg, [:cl_kernel, :cl_uint, :size_t, :pointer], :cl_int
     attach_function :clGetKernelInfo, [:cl_kernel, :cl_kernel_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clGetKernelWorkGroupInfo, [:cl_kernel, :cl_device_id, :cl_kernel_work_group_info, :size_t, :pointer, :pointer], :cl_int
 
     # event object API
+    attach_function :clWaitForEvents, [:cl_uint, :pointer], :cl_int
+    attach_function :clGetEventInfo, [:cl_event, :cl_event_info, :size_t, :pointer, :pointer], :cl_int
+    attach_function :clCreateUserEvent, [:cl_context, :pointer], :cl_event
+    attach_function :clRetainEvent, [:cl_event], :cl_int
+    attach_function :clReleaseEvent, [:cl_event], :cl_int
+    attach_function :clSetUserEventStatus, [:cl_event, :cl_int], :cl_int
+    attach_function :clSetEventCallback, [:cl_event, :cl_int, :pointer, :pointer], :cl_int
 
     # profiling API
+    attach_function :clGetEventProfilingInfo, [:cl_event, :cl_profiling_info, :size_t, :pointer, :pointer], :cl_int
 
     # flush and finish API
+    attach_function :clFlush, [:cl_command_queue], :cl_int
     attach_function :clFinish, [:cl_command_queue], :cl_int
 
     # enqueued command API
     attach_function :clEnqueueReadBuffer, [:cl_command_queue, :cl_mem, :cl_bool, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueReadBufferRect, [:cl_command_queue, :cl_mem, :cl_bool, :pointer, :pointer, :pointer, :size_t, :size_t, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueWriteBuffer, [:cl_command_queue, :cl_mem, :cl_bool, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueWriteBufferRect, [:cl_command_queue, :cl_mem, :cl_bool, :pointer, :pointer, :pointer, :size_t, :size_t, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueCopyBuffer, [:cl_command_queue, :cl_mem, :cl_mem, :size_t, :size_t, :size_t, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueCopyBufferRect, [:cl_command_queue, :cl_mem, :cl_mem, :pointer, :pointer, :pointer, :size_t, :size_t, :size_t, :size_t, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueReadImage, [:cl_command_queue, :cl_mem, :cl_bool, :pointer, :pointer, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueWriteImage, [:cl_command_queue, :cl_mem, :cl_bool, :pointer, :pointer, :size_t, :size_t, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueCopyImage, [:cl_command_queue, :cl_mem, :cl_mem, :pointer, :pointer, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueCopyImageToBuffer, [:cl_command_queue, :cl_mem, :cl_mem, :pointer, :pointer, :size_t, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueCopyBufferToImage, [:cl_command_queue, :cl_mem, :cl_mem, :size_t, :pointer, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueMapBuffer, [:cl_command_queue, :cl_mem, :cl_bool, :cl_map_flags, :size_t, :size_t, :cl_uint, :pointer, :pointer, :pointer], :pointer
+    attach_function :clEnqueueMapImage, [:cl_command_queue, :cl_mem, :cl_bool, :cl_map_flags, :pointer, :pointer, :pointer, :pointer, :cl_uint, :pointer, :pointer, :pointer], :pointer
+    attach_function :clEnqueueUnmapMemObject, [:cl_command_queue, :cl_mem, :pointer, :cl_uint, :pointer, :pointer], :cl_int
     attach_function :clEnqueueNDRangeKernel, [:cl_command_queue, :cl_kernel, :cl_uint, :pointer, :pointer, :pointer, :cl_uint, :pointer, :pointer], :cl_int
     attach_function :clEnqueueTask, [:cl_command_queue, :cl_kernel, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueNativeKernel, [:cl_command_queue, :pointer, :pointer, :size_t, :cl_uint, :pointer, :pointer, :cl_uint, :pointer, :pointer], :cl_int
+    attach_function :clEnqueueMarker, [:cl_command_queue, :pointer], :cl_int
+    attach_function :clEnqueueWaitForEvents, [:cl_command_queue, :cl_uint, :pointer], :cl_int
+    attach_function :clEnqueueBarrier, [:cl_command_queue], :cl_int
+
+    # extension function access
+    attach_function :clGetExtensionFunctionAddress, [:string], :void
   end
 end
