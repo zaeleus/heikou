@@ -2,7 +2,11 @@ module FFI
   module OpenCL
     extend FFI::Library
 
-    ffi_lib '/System/Library/Frameworks/OpenCL.framework/OpenCL'
+    if FFI::Platform.mac?
+      ffi_lib '/System/Library/Frameworks/OpenCL.framework/OpenCL'
+    else
+      ffi_lib 'OpenCL'
+    end
 
     typedef :int32, :cl_int
     typedef :uint32, :cl_uint
