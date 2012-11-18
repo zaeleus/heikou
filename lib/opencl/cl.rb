@@ -2,8 +2,13 @@ module OpenCL
   class CL
     include FFI::OpenCL
 
+    def initialize
+      @buffers = []
+    end
+
     def finalize
       @contexts.each(&:finalize)
+      @buffers.each(&:finalize)
     end
 
     def platforms
@@ -41,6 +46,13 @@ module OpenCL
 
     def default_queue
       queues.first
+    end
+
+    def create_buffer(type, size, options = 0)
+      options ||= CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR
+      buffer = Buffer.new(self, default_context, options, type, size)
+      @buffers << buffer
+      buffer
     end
   end
 end
