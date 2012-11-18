@@ -4,6 +4,19 @@ module OpenCL
 
     attr_reader :id
 
+    def self.all(cl)
+      num_platforms = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
+      clGetPlatformIDs(0, nil, num_platforms)
+
+      n = num_platforms.read_uint
+      platforms = FFI::MemoryPointer.new(FFI::OpenCL.find_type(:cl_platform_id), n)
+      clGetPlatformIDs(n, platforms, num_platforms)
+
+      platforms.read_array_of_pointer(n).map do |ptr|
+        Platform.new(cl, ptr)
+      end
+    end
+
     def initialize(cl, id)
       @cl = cl
       @id = id

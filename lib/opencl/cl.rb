@@ -7,11 +7,7 @@ module OpenCL
     end
 
     def platforms
-      @platforms ||= begin
-        platform = FFI::MemoryPointer.new :pointer
-        clGetPlatformIDs(1, platform, nil)
-        [Platform.new(self, platform.read_pointer)]
-      end
+      @platforms ||= Platform.all(cl)
     end
 
     def default_platform
