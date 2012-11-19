@@ -3,16 +3,19 @@ module OpenCL
     include FFI::OpenCL
 
     def initialize
-      @buffers = []
+      clear
     end
 
     def finalize
-      @contexts.each(&:finalize)
       @buffers.each(&:finalize)
+      @programs.each(&:finalize)
+      @queues.each(&:finalize)
+      @contexts.each(&:finalize)
     end
 
     def platforms
-      @platforms ||= Platform.all(self)
+      return @platforms unless @platforms.empty?
+      @platforms = Platform.all(self)
     end
 
     def default_platform
@@ -20,7 +23,8 @@ module OpenCL
     end
 
     def devices
-      @devices ||= Device.all(self)
+      return @devices unless @devices.empty?
+      @devices = Device.all(self)
     end
 
     def default_device
@@ -28,7 +32,8 @@ module OpenCL
     end
 
     def contexts
-      @contexts ||= [Context.new(self, default_device)]
+      return @contexts unless @contexts.empty?
+      @contexts = [Context.new(self, default_device)]
     end
 
     def default_context
@@ -37,11 +42,14 @@ module OpenCL
 
     def create_program_with_source(source = nil)
       source ||= yield
-      Program.new(self, default_context, source)
+      program = Program.new(self, default_context, source)
+      @programs << program
+      program
     end
 
     def queues
-      @queues ||= [Queue.new(self, default_context, default_device)]
+      return @queues unless @queues.empty?
+      @queues = [Queue.new(self, default_context, default_device)]
     end
 
     def default_queue
@@ -53,6 +61,17 @@ module OpenCL
       buffer = Buffer.new(self, default_context, options, type, size)
       @buffers << buffer
       buffer
+    end
+
+    private
+
+    def clear
+      @platforms = []
+      @devices = []
+      @buffers = []
+      @programs = []
+      @queues = []
+      @contexts = []
     end
   end
 end

@@ -13,6 +13,7 @@ module OpenCL
     end
 
     def finalize
+      reference_count.times { release }
     end
 
     def retain
@@ -21,6 +22,12 @@ module OpenCL
 
     def release
       clReleaseCommandQueue(@queue)
+    end
+
+    def reference_count
+      ref_count = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
+      clGetCommandQueueInfo(@queue, CL_QUEUE_REFERENCE_COUNT, ref_count.size, ref_count, nil)
+      ref_count.read_uint
     end
 
     def enqueue_task(kernel)

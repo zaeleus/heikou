@@ -16,6 +16,7 @@ module OpenCL
     end
 
     def finalize
+      reference_count.times { release }
     end
 
     def retain

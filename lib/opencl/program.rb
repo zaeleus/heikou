@@ -8,11 +8,13 @@ module OpenCL
       @cl = cl
       @context = context
       @sources = sources.is_a?(String) ? [sources] : sources
+      @kernels = {}
       create and build
     end
 
     def finalize
-      release until reference_count == 0
+      @kernels.values.each(&:finalize)
+      reference_count.times { release }
     end
 
     def retain
@@ -65,7 +67,7 @@ module OpenCL
 
     def to_kernel(name)
       kernel = clCreateKernel(@program, name, nil)
-      Kernel.new(@cl, self, kernel)
+      @kernels[name] = Kernel.new(@cl, self, kernel)
     end
 
     private
