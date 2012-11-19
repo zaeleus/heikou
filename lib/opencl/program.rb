@@ -9,7 +9,9 @@ module OpenCL
       @context = context
       @sources = sources.is_a?(String) ? [sources] : sources
       @kernels = {}
-      create and build
+
+      create
+      build
     end
 
     def finalize
@@ -66,7 +68,10 @@ module OpenCL
     end
 
     def to_kernel(name)
-      kernel = clCreateKernel(@program, name, nil)
+      err = Error.buffer
+      kernel = clCreateKernel(@program, name, err)
+      Error.check!(err)
+
       @kernels[name] = Kernel.new(@cl, self, kernel)
     end
 
@@ -83,7 +88,9 @@ module OpenCL
         sizes[i].write_pointer source.size
       end
 
-      @program = clCreateProgramWithSource(context, size, sources, sizes, nil)
+      err = Error.buffer
+      @program = clCreateProgramWithSource(context, size, sources, sizes, err)
+      Error.check!(err)
     end
 
     def build
@@ -93,7 +100,8 @@ module OpenCL
         devices[i].write_pointer device.id
       end
 
-      clBuildProgram(@program, @context.num_devices, devices, nil, nil, nil)
+      err = clBuildProgram(@program, @context.num_devices, devices, nil, nil, nil)
+      Error.check!(err)
     end
   end
 end

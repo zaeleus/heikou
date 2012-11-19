@@ -46,7 +46,8 @@ module OpenCL
       value = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_mem)
       value.write_pointer mem
 
-      clSetKernelArg(@kernel, index, value.size, value)
+      err = clSetKernelArg(@kernel, index, value.size, value)
+      Error.check!(err)
     end
 
     def call(*args)

@@ -33,7 +33,8 @@ module OpenCL
     def enqueue_task(kernel)
       kernel = kernel.kernel
 
-      clEnqueueTask(@queue, kernel, 0, nil, nil)
+      err = clEnqueueTask(@queue, kernel, 0, nil, nil)
+      Error.check!(err)
     end
     alias_method :<<, :enqueue_task
     alias_method :add, :enqueue_task
@@ -44,9 +45,11 @@ module OpenCL
       global_size = FFI::MemoryPointer.new :pointer
       global_size.write_long_long 4096
 
-      clEnqueueNDRangeKernel(@queue, kernel, 1, nil, global_size, nil, 0, nil, nil)
+      err = clEnqueueNDRangeKernel(@queue, kernel, 1, nil, global_size, nil, 0, nil, nil)
+      Error.check!(err)
 
-      clFinish(@queue)
+      err = clFinish(@queue)
+      Error.check!(err)
     end
 
     def read_buffer(buffer)
@@ -54,7 +57,8 @@ module OpenCL
       host_ptr = buffer.host_ptr
       size = host_ptr.size
 
-      clEnqueueReadBuffer(@queue, mem, CL_TRUE, 0, size, host_ptr, 0, nil, nil)
+      err = clEnqueueReadBuffer(@queue, mem, CL_TRUE, 0, size, host_ptr, 0, nil, nil)
+      Error.check!(err)
     end
 
     private
@@ -63,7 +67,9 @@ module OpenCL
       context = @context.context
       device = @device.id
 
-      @queue = clCreateCommandQueue(context, device, 0, nil)
+      err = Error.buffer
+      @queue = clCreateCommandQueue(context, device, 0, err)
+      Error.check!(err)
     end
   end
 end

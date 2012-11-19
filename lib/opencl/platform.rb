@@ -6,11 +6,13 @@ module OpenCL
 
     def self.all(cl)
       num_platforms = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
-      clGetPlatformIDs(0, nil, num_platforms)
+      err = clGetPlatformIDs(0, nil, num_platforms)
+      Error.check!(err)
 
       n = num_platforms.read_uint
       platforms = FFI::MemoryPointer.new(FFI::OpenCL.find_type(:cl_platform_id), n)
-      clGetPlatformIDs(n, platforms, num_platforms)
+      err = clGetPlatformIDs(n, platforms, num_platforms)
+      Error.check!(err)
 
       platforms.read_array_of_pointer(n).map do |ptr|
         Platform.new(cl, ptr)

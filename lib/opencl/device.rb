@@ -8,11 +8,13 @@ module OpenCL
       platform = cl.default_platform
 
       num_devices = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
-      clGetDeviceIDs(platform.id, CL_DEVICE_TYPE_ALL, 0, nil, num_devices)
+      err = clGetDeviceIDs(platform.id, CL_DEVICE_TYPE_ALL, 0, nil, num_devices)
+      Error.check!(err)
 
       n = num_devices.read_uint
       devices = FFI::MemoryPointer.new :pointer, n
-      clGetDeviceIDs(platform.id, CL_DEVICE_TYPE_ALL, n, devices, nil)
+      err = clGetDeviceIDs(platform.id, CL_DEVICE_TYPE_ALL, n, devices, nil)
+      Error.check!(err)
 
       devices.read_array_of_pointer(n).map do |ptr|
         Device.new(self, ptr)

@@ -41,7 +41,9 @@ module OpenCL
         devices[i].write_pointer device.id
       end
 
-      @context = clCreateContext(nil, @devices.size, devices, nil, nil, nil)
+      err = Error.buffer
+      @context = clCreateContext(nil, @devices.size, devices, nil, nil, err)
+      Error.check!(err)
     end
   end
 end
