@@ -12,7 +12,7 @@ module OpenCL
     end
 
     def platforms
-      @platforms ||= Platform.all(cl)
+      @platforms ||= Platform.all(self)
     end
 
     def default_platform
@@ -20,7 +20,7 @@ module OpenCL
     end
 
     def devices
-      @devices ||= Device.all(cl)
+      @devices ||= Device.all(self)
     end
 
     def default_device
