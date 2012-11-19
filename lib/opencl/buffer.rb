@@ -40,6 +40,14 @@ module OpenCL
       @host_ptr[index].send("read_#{@type}")
     end
 
+    def read
+      @cl.default_queue.read_buffer(self)
+    end
+
+    def to_a
+      @host_ptr.send("read_array_of_#{@type}", @size)
+    end
+
     private
 
     def create(options)

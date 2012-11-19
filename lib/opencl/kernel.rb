@@ -53,6 +53,8 @@ module OpenCL
       args.each_with_index do |arg, i|
         set_arg(i, arg)
       end
+
+      @cl.default_queue.enqueue_nd_range(self)
     end
     alias_method :[], :call
 
