@@ -61,7 +61,6 @@ module OpenCL
 
     def self.check!(code, message = '')
       code = code.read_int32 if code.respond_to?(:read_int32)
-      puts code
       return if code == CL_SUCCESS
       raise RuntimeError, "#{MAP[code]}: #{message}"
     end
