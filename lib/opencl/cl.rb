@@ -2,6 +2,20 @@ module OpenCL
   class CL
     include FFI::OpenCL
 
+    def self.create
+      cl = new
+
+      if block_given?
+        begin
+          yield cl
+        ensure
+          cl.finalize
+        end
+      else
+        cl
+      end
+    end
+
     def initialize
       clear
     end
