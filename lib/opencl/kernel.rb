@@ -41,6 +41,8 @@ module OpenCL
     end
 
     def set_arg(index, buffer)
+      buffer = buffer.to_buffer(@cl) if buffer.respond_to?(:to_buffer)
+
       mem = buffer.mem
 
       value = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_mem)
