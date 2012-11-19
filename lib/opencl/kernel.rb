@@ -40,9 +40,13 @@ module OpenCL
       ref_count.read_uint
     end
 
-    def set_arg(index, value)
-      size = FFI::OpenCL.find_type(:cl_uint).size
-      clSetKernelArg(@kernel, index, size, value.host_ptr)
+    def set_arg(index, buffer)
+      mem = buffer.mem
+
+      value = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_mem)
+      value.write_pointer mem
+
+      clSetKernelArg(@kernel, index, value.size, value)
     end
 
     def call(*args)
