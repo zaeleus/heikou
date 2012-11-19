@@ -48,8 +48,8 @@ module OpenCL
       queues.first
     end
 
-    def create_buffer(type, size, options = 0)
-      options ||= CL_MEM_READ_ONLY | CL_MEM_COPY_HOST_PTR
+    def create_buffer(type, size, options = nil)
+      options ||= CL_MEM_READ_ONLY | CL_MEM_USE_HOST_PTR
       buffer = Buffer.new(self, default_context, options, type, size)
       @buffers << buffer
       buffer
