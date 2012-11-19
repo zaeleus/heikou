@@ -45,7 +45,9 @@ module OpenCL
     def create(options)
       context = @context.context
       size = @host_ptr.size
-      @mem = clCreateBuffer(context, options, size, @host_ptr, nil)
+      host_ptr = ((options & CL_MEM_WRITE_ONLY) != 0) ? nil : @host_ptr
+
+      @mem = clCreateBuffer(context, options, size, host_ptr, err)
     end
   end
 end
