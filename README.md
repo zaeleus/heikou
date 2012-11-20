@@ -1,4 +1,4 @@
-# ffi-opencl
+# Heikou
 
 TODO: Write a gem description
 
@@ -6,7 +6,7 @@ TODO: Write a gem description
 
 Add this line to your application's Gemfile:
 
-    gem 'ffi-opencl'
+    gem 'heikou'
 
 And then execute:
 
@@ -14,11 +14,27 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install ffi-opencl
+    $ gem install heikou
 
 ## Usage
 
 TODO: Write usage instructions here
+
+### Example
+
+    require 'heikou'
+
+    Heikou::CL.create do |cl|
+      source = File.read('/tmp/vecadd.cl')
+      vecadd = cl.create_program(source).to_kernel
+
+      a = b = (0...4096).map(&:float)
+      c = cl.create_buffer :float, 4096
+
+      vecadd[a, b, c]
+
+      p c.to_a
+    end
 
 ## Contributing
 
