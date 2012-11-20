@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'opencl/version'
+require 'heikou/version'
 
 Gem::Specification.new do |gem|
-  gem.name          = 'ffi-opencl'
-  gem.version       = OpenCL::VERSION
+  gem.name          = 'heikou'
+  gem.version       = Heikou::VERSION
   gem.authors       = ['Michael Macias']
   gem.email         = ['mamacias@olemiss.edu']
   gem.description   = %q{TODO: Write a gem description}

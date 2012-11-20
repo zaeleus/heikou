@@ -1,4 +1,4 @@
-module OpenCL
+module Heikou
   class Device
     include FFI::OpenCL
 

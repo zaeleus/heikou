@@ -1,4 +1,4 @@
-module OpenCL
+module Heikou
   class Buffer
     include FFI::OpenCL
 
