@@ -67,7 +67,11 @@ module Heikou
       log.read_string
     end
 
-    def to_kernel(name)
+    def to_kernel(name = nil)
+      if name.nil?
+        return kernels.first
+      end
+
       err = Error.buffer
       kernel = clCreateKernel(@program, name, err)
       Error.check!(err)
@@ -81,8 +85,9 @@ module Heikou
       Error.check!(err)
 
       n = num_kernels.read_uint
-      kernels = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_kernel), n
+      kernels = FFI::MemoryPointer.new(FFI::OpenCL.find_type(:cl_kernel), n)
       err = clCreateKernelsInProgram(@program, n, kernels, nil)
+      Error.check!(err)
 
       kernels.read_array_of_pointer(n).map do |ptr|
         kernel = Kernel.new(@cl, self, ptr)
@@ -90,6 +95,7 @@ module Heikou
         kernel
       end
     end
+    alias_method :kernels, :to_kernels
 
     private
 
