@@ -75,6 +75,22 @@ module Heikou
       @kernels[name] = Kernel.new(@cl, self, kernel)
     end
 
+    def to_kernels
+      num_kernels = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
+      err = clCreateKernelsInProgram(@program, 0, nil, num_kernels)
+      Error.check!(err)
+
+      n = num_kernels.read_uint
+      kernels = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_kernel), n
+      err = clCreateKernelsInProgram(@program, n, kernels, nil)
+
+      kernels.read_array_of_pointer(n).map do |ptr|
+        kernel = Kernel.new(@cl, self, ptr)
+        @kernels[kernel.name] = kernel
+        kernel
+      end
+    end
+
     private
 
     def create
