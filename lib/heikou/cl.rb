@@ -54,7 +54,7 @@ module Heikou
       contexts.first
     end
 
-    def create_program_with_source(source = nil)
+    def create_program(source = nil)
       source ||= yield
       program = Program.new(self, default_context, source)
       @programs << program
