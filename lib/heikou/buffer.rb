@@ -57,6 +57,7 @@ module Heikou
 
     def read
       @cl.default_queue.read_buffer(self)
+      mark_clean
     end
 
     def to_a
