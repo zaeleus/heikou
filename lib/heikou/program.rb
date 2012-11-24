@@ -39,6 +39,26 @@ module Heikou
       @sources.join("\n")
     end
 
+    def binary_sizes
+      sizes = FFI::MemoryPointer.new :size_t, devices.size
+      clGetProgramInfo(@program, CL_PROGRAM_BINARY_SIZES, sizes.size, sizes, nil)
+      sizes.read_array_of_long_long(devices.size)
+    end
+
+    def binaries
+      binaries = FFI::MemoryPointer.new :pointer, devices.size
+
+      binary_sizes.each_with_index do |size, i|
+        binaries[i].write_pointer FFI::MemoryPointer.new(:uchar, size)
+      end
+
+      clGetProgramInfo(@program, CL_PROGRAM_BINARIES, binaries.size, binaries, nil)
+
+      binaries.read_array_of_pointer(devices.size).map do |ptr|
+        ptr.read_pointer.read_bytes(binary_sizes[0])
+      end
+    end
+
     def reference_count
       ref_count = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_uint)
       clGetProgramInfo(@program, CL_PROGRAM_REFERENCE_COUNT, ref_count.size, ref_count, nil)
@@ -65,6 +85,10 @@ module Heikou
       log = FFI::MemoryPointer.new :string, log_size + 1
       clGetProgramBuildInfo(@program, @cl.default_device.id, CL_PROGRAM_BUILD_LOG, log_size + 1, log, nil)
       log.read_string
+    end
+
+    def to_binary
+      binaries.first
     end
 
     def to_kernel(name = nil)
