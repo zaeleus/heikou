@@ -12,6 +12,8 @@ module Heikou
 
       @host_ptr = FFI::MemoryPointer.new type, size
 
+      mark_clean
+
       create(options)
     end
 
@@ -25,6 +27,18 @@ module Heikou
 
     def release
       clReleaseMemObject(@mem)
+    end
+
+    def mark_clean
+      @dirty = false
+    end
+
+    def mark_dirty
+      @dirty = true
+    end
+
+    def dirty?
+      @dirty
     end
 
     def reference_count
@@ -46,6 +60,7 @@ module Heikou
     end
 
     def to_a
+      read if dirty?
       @host_ptr.send("read_array_of_#{@type}", @size)
     end
 

@@ -44,6 +44,7 @@ module Heikou
       buffer = buffer.to_buffer(@cl) if buffer.respond_to?(:to_buffer)
 
       mem = buffer.mem
+      buffer.mark_dirty
 
       value = FFI::MemoryPointer.new FFI::OpenCL.find_type(:cl_mem)
       value.write_pointer mem
