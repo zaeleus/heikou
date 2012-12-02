@@ -62,7 +62,8 @@ module Heikou
     def self.check!(code, message = '')
       code = code.read_int32 if code.respond_to?(:read_int32)
       return if code == CL_SUCCESS
-      raise RuntimeError, "#{MAP[code]}: #{message}"
+      message = ": #{message}" unless message.empty?
+      raise RuntimeError, "#{MAP[code]}#{message}"
     end
   end
 end

@@ -147,7 +147,7 @@ module Heikou
       end
 
       err = clBuildProgram(@program, @context.num_devices, devices, nil, nil, nil)
-      Error.check!(err)
+      Error.check!(err, build_log) if err != CL_SUCCESS
     end
   end
 end
